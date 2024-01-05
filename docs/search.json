@@ -103,5 +103,54 @@
     "title": "Painel covid-19 em PE",
     "section": "Adicionar em uma tabela no database PostgreSQL",
     "text": "Adicionar em uma tabela no database PostgreSQL\n\n\nCode\n#criar uma conexão do R com o postgreSQL\n\nmy_user = \"postgres\"\nmy_password = \"r&gt;python\" #coloque sua senha aqui\n\ncon &lt;- dbConnect(drv = RPostgres::Postgres(),\n                 dbname=\"postgres\",\n                 host = \"localhost\",\n                 port = 5432,\n                 user = my_user,\n                 password = my_password)\n\n#escrever o dataframe transformado para uma tabela no PostgreSQL\ndbWriteTable(conn = con,\n             name = \"covidbr\",   \n             value = covidbr,\n             overwrite = TRUE)\n\n# fechar a conexão\ndbDisconnect(con)\nrm(con, my_password, my_user)"
+  },
+  {
+    "objectID": "covidbr.html",
+    "href": "covidbr.html",
+    "title": "Painel covid-19 em PE",
+    "section": "",
+    "text": "Com um processo de atualização mais lento que os dados de SG, o Painel Coronavirus do Governo do Brasil traz os dados consolidados de novos casos e óbitos por covid-19 no Brasil, segmentado por Região e Estado. Como não há um ftp disponível para essa base de dados, utilizamos técnicas básicas de web scraping para obter os valores, inserir em um banco de dados local e gerar as visualizações no Power BI."
+  },
+  {
+    "objectID": "covidbr.html#dados-da-srag-através-do-painel-coronavirus-do-governo",
+    "href": "covidbr.html#dados-da-srag-através-do-painel-coronavirus-do-governo",
+    "title": "Painel covid-19 em PE",
+    "section": "",
+    "text": "Com um processo de atualização mais lento que os dados de SG, o Painel Coronavirus do Governo do Brasil traz os dados consolidados de novos casos e óbitos por covid-19 no Brasil, segmentado por Região e Estado. Como não há um ftp disponível para essa base de dados, utilizamos técnicas básicas de web scraping para obter os valores, inserir em um banco de dados local e gerar as visualizações no Power BI."
+  },
+  {
+    "objectID": "covidbr.html#carregamento-dos-pacotes",
+    "href": "covidbr.html#carregamento-dos-pacotes",
+    "title": "Painel covid-19 em PE",
+    "section": "Carregamento dos pacotes",
+    "text": "Carregamento dos pacotes\n\n\nCode\nlibrary(RSelenium)\nlibrary(netstat)\nlibrary(data.table)\nlibrary(tidyverse)\nlibrary(DBI)\nlibrary(RPostgres)"
+  },
+  {
+    "objectID": "covidbr.html#iniciar-o-servidor-selenium",
+    "href": "covidbr.html#iniciar-o-servidor-selenium",
+    "title": "Painel covid-19 em PE",
+    "section": "Iniciar o servidor selenium",
+    "text": "Iniciar o servidor selenium\n\n\nCode\n#iniciar o servidor no firefox\nrs_driver_object = rsDriver(browser = \"firefox\",\n                            verbose = FALSE,\n                            port = free_port())\n\n#criar um cliente\nremDr = rs_driver_object$client"
+  },
+  {
+    "objectID": "covidbr.html#baixar-os-dados",
+    "href": "covidbr.html#baixar-os-dados",
+    "title": "Painel covid-19 em PE",
+    "section": "Baixar os dados",
+    "text": "Baixar os dados\n\n\nCode\n#entrar no site\nremDr$navigate(\"https://covid.saude.gov.br/\")\n\n#atraves no navegador, utilizar a funcao de inspecionar elemento e copiar a xpath\n\n#acessar o botão de download\nbotao_baixar_csv = remDr$findElement(using = \"xpath\", \n                                     value = \"/html/body/app-root/ion-app/ion-router-outlet/app-home/ion-content/div[1]/div[2]/ion-button\")\n\n#confitmar que o botao é o correto\nbotao_baixar_csv$getElementAttribute(\"class\")\n\n#clicar para baixar\nbotao_baixar_csv$clickElement()\n\n#desconectar do servidor\nsystem(\"taskkill /im java.exe /f\")\nrm(botao_baixar_csv, remDr, rs_driver_object)"
+  },
+  {
+    "objectID": "covidbr.html#abrir-os-arquivos",
+    "href": "covidbr.html#abrir-os-arquivos",
+    "title": "Painel covid-19 em PE",
+    "section": "Abrir os arquivos",
+    "text": "Abrir os arquivos\n\n\nCode\n#descomprimir os arquivos\nsetwd(\"C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023\")\n\n\nfor(i in 1:length(\n  list.files(path = \"C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023\"))) {\n  assign(paste0(\"file\",i),\n         fread(list.files(\n           path = \"C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023\")[i]),\n         .GlobalEnv)\n}\nrm(i)\n\n#concatenar dataframes\ncovidbr = eval(parse(text = \n  paste0(\"bind_rows(\",paste0(ls(pattern = \"^file\"), collapse = \",\"),\")\")\n))\nrm(list = ls(pattern = \"^file\"))\n\ncovidbr = covidbr %&gt;%\n  mutate(across(c(estado, municipio, nomeRegiaoSaude), na_if, \"\"))\n\ncovidpe = covidbr %&gt;%\n  filter(estado == \"PE\")"
+  },
+  {
+    "objectID": "covidbr.html#adicionar-em-uma-tabela-no-database-postgresql",
+    "href": "covidbr.html#adicionar-em-uma-tabela-no-database-postgresql",
+    "title": "Painel covid-19 em PE",
+    "section": "Adicionar em uma tabela no database PostgreSQL",
+    "text": "Adicionar em uma tabela no database PostgreSQL\n\n\nCode\n#criar uma conexão do R com o postgreSQL\n\nmy_user = \"postgres\"\nmy_password = \"r&gt;python\" #coloque sua senha aqui\n\ncon &lt;- dbConnect(drv = RPostgres::Postgres(),\n                 dbname=\"postgres\",\n                 host = \"localhost\",\n                 port = 5432,\n                 user = my_user,\n                 password = my_password)\n\n#escrever o dataframe transformado para uma tabela no PostgreSQL\ndbWriteTable(conn = con,\n             name = \"covidbr\",   \n             value = covidbr,\n             overwrite = TRUE)\n\n# fechar a conexão\ndbDisconnect(con)\nrm(con, my_password, my_user)"
   }
 ]

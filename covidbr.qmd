@@ -8,7 +8,7 @@ code-fold: true
 
 ## Dados da SRAG através do painel coronavirus do Governo
 
-Com um processo de atualização mais lento que os dados de SG, o painel coronavirus do Governo do Brasil traz os dados consolidados de novos casos e óbitos por covid-19 no Brasil, segmentado por Região e Estado. Como não há um ftp disponível para essa base de dados, utilizamos técnicas básicas de *web scraping* para obter os valores, inserir em um banco de dados local e gerar as visualizações no Power BI.
+Com um processo de atualização mais lento que os dados de SG, o [Painel Coronavirus](https://covid.saude.gov.br/) do Governo do Brasil traz os dados consolidados de novos casos e óbitos por covid-19 no Brasil, segmentado por Região e Estado. Como não há um ftp disponível para essa base de dados, utilizamos técnicas básicas de *web scraping* para obter os valores, inserir em um banco de dados local e gerar as visualizações no Power BI.
 
 ## Carregamento dos pacotes
 
