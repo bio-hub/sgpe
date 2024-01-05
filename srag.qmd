@@ -1,0 +1,125 @@
+---
+title: "Painel covid-19 em PE"
+author: "BioHub Solutions"
+format: html
+editor: visual
+code-fold: true
+---
+
+## Dados da SRAG através do painel coronavirus do Governo
+
+Com um processo de atualização mais lento que os dados de SG, o painel coronavirus do Governo do Brasil traz os dados consolidados de novos casos e óbitos por covid-19 no Brasil, segmentado por Região e Estado. Como não há um ftp disponível para essa base de dados, utilizamos técnicas básicas de *web scraping* para obter os valores, inserir em um banco de dados local e gerar as visualizações no Power BI.
+
+## Carregamento dos pacotes
+
+```{r, warning=FALSE, message=FALSE}
+#| eval: false
+
+library(RSelenium)
+library(netstat)
+library(data.table)
+library(tidyverse)
+library(DBI)
+library(RPostgres)
+
+```
+
+## Iniciar o servidor selenium
+
+```{r, warning=FALSE, message=FALSE}
+#| eval: false
+
+#iniciar o servidor no firefox
+rs_driver_object = rsDriver(browser = "firefox",
+                            verbose = FALSE,
+                            port = free_port())
+
+#criar um cliente
+remDr = rs_driver_object$client
+
+```
+
+## Baixar os dados
+
+```{r, warning=FALSE, message=FALSE}
+#| eval: false
+
+#entrar no site
+remDr$navigate("https://covid.saude.gov.br/")
+
+#atraves no navegador, utilizar a funcao de inspecionar elemento e copiar a xpath
+
+#acessar o botão de download
+botao_baixar_csv = remDr$findElement(using = "xpath", 
+                                     value = "/html/body/app-root/ion-app/ion-router-outlet/app-home/ion-content/div[1]/div[2]/ion-button")
+
+#confitmar que o botao é o correto
+botao_baixar_csv$getElementAttribute("class")
+
+#clicar para baixar
+botao_baixar_csv$clickElement()
+
+#desconectar do servidor
+system("taskkill /im java.exe /f")
+rm(botao_baixar_csv, remDr, rs_driver_object)
+
+```
+
+## Abrir os arquivos
+
+```{r, warning=FALSE, message=FALSE}
+#| eval: false
+
+#descomprimir os arquivos
+setwd("C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023")
+
+
+for(i in 1:length(
+  list.files(path = "C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023"))) {
+  assign(paste0("file",i),
+         fread(list.files(
+           path = "C:/Users/ronal/Downloads/HIST_PAINEL_COVIDBR_30dez2023")[i]),
+         .GlobalEnv)
+}
+rm(i)
+
+#concatenar dataframes
+covidbr = eval(parse(text = 
+  paste0("bind_rows(",paste0(ls(pattern = "^file"), collapse = ","),")")
+))
+rm(list = ls(pattern = "^file"))
+
+covidbr = covidbr %>%
+  mutate(across(c(estado, municipio, nomeRegiaoSaude), na_if, ""))
+
+covidpe = covidbr %>%
+  filter(estado == "PE")
+```
+
+## Adicionar em uma tabela no database PostgreSQL
+
+```{r, warning=FALSE, message=FALSE}
+#| eval: false
+
+#criar uma conexão do R com o postgreSQL
+
+my_user = "postgres"
+my_password = "r>python" #coloque sua senha aqui
+
+con <- dbConnect(drv = RPostgres::Postgres(),
+                 dbname="postgres",
+                 host = "localhost",
+                 port = 5432,
+                 user = my_user,
+                 password = my_password)
+
+#escrever o dataframe transformado para uma tabela no PostgreSQL
+dbWriteTable(conn = con,
+             name = "covidbr",   
+             value = covidbr,
+             overwrite = TRUE)
+
+# fechar a conexão
+dbDisconnect(con)
+rm(con, my_password, my_user)
+```

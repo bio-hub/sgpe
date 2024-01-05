@@ -1,8 +1,8 @@
 ---
 title: "Síndrome Gripal (SG) em Pernambuco: um painel de vigilância"
 author: "BioHub Solutions"
-date: 12/24/2023
-date-format: DD/MM/YYYY
+date: last-modified
+date-format: "[Última Atualização:] DD-MM-YYYY"
 format: html
 editor: visual
 code-fold: true

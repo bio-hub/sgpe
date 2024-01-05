@@ -120,6 +120,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
  <span class="menu-text">Home</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./srag.html" rel="" target="">
+ <span class="menu-text">Painel covid-19 em PE</span></a>
+  </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
 </div>
@@ -167,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">24/12/2023</p>
+      <p class="date">Última Atualização: 05-01-2024</p>
     </div>
   </div>
   
@@ -214,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="at">file =</span> <span class="st">"C:/Users/ronal/OneDrive/portifoglio/data_sus/SG/arquivos_de_suporte/fetch_sgpe.py"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="at">file =</span> <span class="st">"C:/Users/ronal/OneDrive/portfoglio/data_sus/SG/arquivos_de_suporte/fetch_sgpe.py"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Uma vez que a requisição à API foi concluída, realizamos algumas transformações nos dados e carregamos para um banco de dados postgreSQL utilizando o R:</p>
@@ -320,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="at">file =</span> <span class="st">"C:/Users/ronal/OneDrive/portifoglio/data_sus/SG/arquivos_de_suporte/update_sgpe.py"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="at">file =</span> <span class="st">"C:/Users/ronal/OneDrive/portfoglio/data_sus/SG/arquivos_de_suporte/update_sgpe.py"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Agora, realizar as transformações nos dados e carregar os novos registros no nosso database.</p>
@@ -454,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>script <span class="ot">=</span> <span class="st">"C:/Users/ronal/OneDrive/portifoglio/data_sus/SG/arquivos_de_suporte/transfer_to_db.R"</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>script <span class="ot">=</span> <span class="st">"C:/Users/ronal/OneDrive/portfoglio/data_sus/SG/arquivos_de_suporte/transfer_to_db.R"</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">taskscheduler_create</span>(<span class="at">taskname  =</span> <span class="st">"atualizar_sgpe"</span>, </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rscript   =</span> script,</span>
